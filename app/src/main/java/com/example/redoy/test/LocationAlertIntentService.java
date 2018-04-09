@@ -142,9 +142,21 @@ public class LocationAlertIntentService extends IntentService {
 
         builder.setAutoCancel(true);
 
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        android.app.Notification notification = builder.build();
+        android.widget.RemoteViews contentView = new android.widget.RemoteViews(getPackageName(), R.layout.notification);
 
-        mNotificationManager.notify(0, builder.build());
+        final String time = java.text.DateFormat.getTimeInstance().format(new java.util.Date()).toString();
+        final String text = getResources().getString(R.string.collapsed, time);
+        contentView.setTextViewText(R.id.textView, locationDetails);
+
+        notification.contentView = contentView;
+
+        /*if (android.os.Build.VERSION.SDK_INT >= 16) {
+            android.widget.RemoteViews expandedView = new android.widget.RemoteViews(getPackageName(), R.layout.notification_expanded);
+            notification.bigContentView = expandedView;
+        }*/
+
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(0, notification);
     }
 }
